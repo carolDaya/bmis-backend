@@ -16,9 +16,10 @@ def listar_sensores():
 def listar_lecturas(sensor_id):
     lecturas = Lectura.query.filter_by(sensor_id=sensor_id).all()
     result = [{
-        "sensor_id": sensor_id,                  # Aquí agregas el ID del sensor
-        "fecha_hora": l.fecha_hora.isoformat(),  # Fecha en formato ISO
-        "valor": l.valor                          # Valor del sensor
+        "sensor_id": sensor_id,                
+        "fecha_hora": l.fecha_hora.isoformat(), 
+        "valor": l.valor                       
     } for l in lecturas]
     return jsonify(result), 200
 
+    

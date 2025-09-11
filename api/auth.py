@@ -19,14 +19,14 @@ def register():
     if data["password"] != data["confirm_password"]:
         return jsonify({"error": "Las contraseñas no coinciden"}), 400
 
-    # Crear usuario usando la función del service
+
     user, error = crear_usuario(
         nombre=data["nombre"],
         telefono=data["telefono"],
         password=data["password"]
     )
 
-    # Si hubo error al crear el usuario (ej. teléfono ya registrado)
+    # Si hubo error al crear el usuario 
     if error:
         return jsonify({"error": error}), 400
 
