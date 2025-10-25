@@ -2,6 +2,7 @@ from flask import Flask
 from database.connection import init_app, db
 from api.auth import auth_bp
 from api.sensor import sensors_bp
+from api.users import users_bp
 from services.sensor_service import crear_sensores_base, generar_datos_sinteticos
 
 app = Flask(__name__)
@@ -10,6 +11,7 @@ init_app(app)
 # Registrar blueprints
 app.register_blueprint(auth_bp, url_prefix="/auth")
 app.register_blueprint(sensors_bp, url_prefix="/api")
+app.register_blueprint(users_bp, url_prefix="/api") 
 
 # Crear tablas y generar datos base
 with app.app_context():
