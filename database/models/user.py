@@ -9,8 +9,8 @@ class User(db.Model):
     nombre = db.Column(db.String(50), nullable=False)
     telefono = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
-    rol = db.Column(db.String(20), default="usuario") 
-    estado = db.Column(db.String(20), default="activo") 
+    rol = db.Column(db.String(20), default="usuario")
+    estado = db.Column(db.String(20), default="activo")
     conectado = db.Column(db.Boolean, default=False)
     ultima_conexion = db.Column(db.DateTime, default=None)
 

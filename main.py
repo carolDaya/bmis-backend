@@ -1,23 +1,29 @@
 from flask import Flask
-from database.connection import init_app, db
-from api.auth import auth_bp
-from api.sensor import sensors_bp
-from services.sensor_service import crear_sensores_base, generar_datos_sinteticos
+from flask_cors import CORS
+from database.connection import init_app
 
-app = Flask(__name__)
-init_app(app)
+from api.auth_bp import auth_bp
+from api.sensors_bp import sensors_bp
+from api.graph_bp import graph_bp
+from api.lectura_bp import lectura_bp
+from api.ai_bp import ai_bp
 
-# Registrar blueprints
-app.register_blueprint(auth_bp, url_prefix="/auth")
-app.register_blueprint(sensors_bp, url_prefix="/api")
+def create_app():
+    app = Flask(__name__)
+    init_app(app)
 
-# Crear tablas y generar datos base
-with app.app_context():
-    db.create_all()
-    # Crear sensores si no existen
-    crear_sensores_base()
-    # Generar lecturas sintéticas (30 días)
-    generar_datos_sinteticos(dias=30)
+    # Habilitar CORS para todas las rutas y orígenes
+    CORS(app)
 
+    app.register_blueprint(auth_bp, url_prefix="/auth")
+    app.register_blueprint(sensors_bp, url_prefix="/api")
+    app.register_blueprint(graph_bp, url_prefix="/api")
+    app.register_blueprint(ai_bp, url_prefix="/api")
+    app.register_blueprint(lectura_bp, url_prefix="/api")
+
+    return app
+
+# Punto de entrada principal
 if __name__ == "__main__":
+    app = create_app()
     app.run(host="0.0.0.0", port=5000, debug=True)
