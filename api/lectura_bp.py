@@ -37,3 +37,33 @@ def get_lecturas():
         "observaciones": l.observaciones
     } for l in lecturas]
     return jsonify(result), 200
+# ----------------------------------------------------------------------
+# 3. GET /lecturas/<sensor_id>: Obtener lecturas por Sensor
+# ----------------------------------------------------------------------
+@lectura_bp.route("/lecturas/<int:sensor_id>", methods=["GET"])
+def get_lecturas_por_sensor_endpoint(sensor_id):
+    """
+    Este endpoint se mapea a 'lecturaRepo.getLecturas(sensorId)' en Android.
+    Retorna los datos históricos para dibujar la gráfica.
+    """
+    try:
+        # Llama a tu función de servicio de DB (que soporta 'limite' si lo implementaste, 
+        # pero aquí usamos la versión simple para obtener todas las relevantes)
+        lecturas = obtener_lecturas_por_sensor(sensor_id, limite=20) # Ejemplo: limitar a las últimas 20
+        
+        # Si no hay lecturas, devolvemos una lista vacía con código 200.
+        if not lecturas:
+            return jsonify([]), 200 
+            
+        result = [{
+            "id": l.id,
+            "sensor_id": l.sensor_id,
+            "valor": l.valor,
+            # Formato crucial para el frontend
+            "fecha_hora": l.fecha_hora.isoformat(), 
+            "observaciones": l.observaciones
+        } for l in lecturas]
+        
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({"error": f"Error al obtener lecturas del sensor {sensor_id}: {e}"}), 500

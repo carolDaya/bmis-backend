@@ -65,20 +65,30 @@ def login():
     if not data or "telefono" not in data or "password" not in data:
         return jsonify({"error": "Debe ingresar teléfono y contraseña"}), 400
 
-    # Llamada al servicio
+    # 🔍 Llamada al servicio para verificar credenciales
     user = login_usuario(data["telefono"], data["password"])
-    
-    if user:
-        # 200 OK
-        return jsonify({
-            "message": "Login exitoso",
-            "usuario": user.nombre,
-            "rol": user.rol,
-            "ultima_conexion": user.ultima_conexion
-        }), 200
-    else:
-        # Error 401 Unauthorized (credenciales inválidas) o 404
+
+    if not user:
         return jsonify({"error": "Teléfono o contraseña incorrecta"}), 401
+
+    # 🚫 Verificar si el usuario está bloqueado
+    if user.estado == "bloqueado":
+        return jsonify({
+            "error": "El usuario ha sido bloqueado por el administrador.",
+            "detalle": "Comuníquese con el administrador para más información."
+        }), 403  # 403 = Forbidden
+
+    # ✅ Si el usuario está activo, continuar con el login
+    return jsonify({
+        "message": "Login exitoso",
+        "usuario": user.nombre,
+        "rol": user.rol,
+        "ultima_conexion": (
+            user.ultima_conexion.strftime("%Y-%m-%d %H:%M:%S")
+            if user.ultima_conexion else None
+        )
+    }), 200
+
 
 # -----------------------------------------------------------------
 # 3. Paso 1: Solicitud de Restablecimiento (Verificación)
