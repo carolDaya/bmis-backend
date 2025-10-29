@@ -5,8 +5,6 @@ from datetime import datetime
 
 def obtener_ultima_lectura_combinada():
     """
-    Obtiene la última lectura registrada de cada sensor (gas, temperatura y presión)
-    usando SQLAlchemy ORM, sin escribir SQL manual.
     Retorna una tupla: (temperatura, presion, gas, timestamp)
     """
 
