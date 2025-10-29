@@ -1,39 +1,34 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, jsonify
 from services.ai_service import predecir_alerta
+from services.db_service import obtener_ultima_lectura_combinada 
 
-# Crea el Blueprint
 ai_bp = Blueprint("ai_bp", __name__)
 
-@ai_bp.route("/analizar", methods=["POST"])
+@ai_bp.route("/analizar", methods=["GET"]) 
 def analizar_biodigestor():
     """
-    Endpoint para recibir una nueva lectura (temperatura, presión, gas, timestamp)
-    y predecir el estado del biodigestor usando la IA.
+    Endpoint llamado por la App Móvil. 
+    Llama a la DB para obtener los últimos datos reales y los pasa a la IA.
     """
-    data = request.get_json()
-
-    # 1. Validación de datos de entrada
     try:
-        # Se asegura que todos los campos requeridos estén presentes y sean del tipo correcto
-        temperatura = float(data["temperatura"])
-        presion = float(data["presion"])
-        gas = float(data["gas"])
-        timestamp = data["timestamp"]
-    except (KeyError, TypeError, ValueError):
-        return jsonify({
-            "error": "Datos incompletos o incorrectos.",
-            "detalle": "Se requieren: 'temperatura' (float), 'presion' (float), 'gas' (float) y 'timestamp' (string)."
-        }), 400
+        # 1. Obtener la última lectura de la Base de Datos (¡El código real que acabas de ver!)
+        lectura = obtener_ultima_lectura_combinada()
 
-    # 2. Ejecutar el servicio de IA
-    try:
+        if not lectura:
+            return jsonify({
+                "error": "No se puede obtener la última lectura de la DB.",
+                "detalle": "Revisar la configuración y el código de db_service.py"
+            }), 404
+
+        temperatura, presion, gas, timestamp = lectura 
+        
+        # 2. Ejecutar el servicio de IA con los datos REALES
         resultado = predecir_alerta(temperatura, presion, gas, timestamp)
         
         # 3. Respuesta exitosa
         return jsonify(resultado), 200
         
     except Exception as e:
-        # Manejo de errores internos (ej. error al cargar modelos o en la lógica)
         print(f"Error durante el procesamiento de la predicción de IA: {e}")
         return jsonify({
             "error": "Error interno del servidor al procesar la predicción.",

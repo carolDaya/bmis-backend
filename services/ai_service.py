@@ -23,7 +23,7 @@ except FileNotFoundError:
 
 
 # Fecha de inicio de tu dataset
-FECHA_INICIO = datetime.strptime("01/01/2025 00:00", "%d/%m/%Y %H:%M")
+FECHA_INICIO = datetime.strptime("01/10/2025 00:00", "%d/%m/%Y %H:%M")
 
 def calcular_dia_proceso(timestamp_str):
     """
