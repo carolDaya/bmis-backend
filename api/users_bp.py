@@ -78,3 +78,14 @@ def update_user_state(user_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
+
+@users_bp.route('/users/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "Usuario no encontrado."}), 404
+    if user.rol == "admin":
+        return jsonify({"error": "No se puede eliminar un usuario administrador."}), 403
+    db.session.delete(user)
+    db.session.commit()
+    return jsonify({"message": f"Usuario {user.nombre} eliminado correctamente."}), 200

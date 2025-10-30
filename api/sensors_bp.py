@@ -34,3 +34,22 @@ def get_sensors():
     sensores = obtener_sensores()
     result = [{"id": s.id, "nombre": s.nombre, "tipo": s.tipo, "unidad": s.unidad} for s in sensores]
     return jsonify(result), 200
+
+@sensors_bp.route("/sensores/<int:id>", methods=["PUT"])
+def update_sensor(id):
+    data = request.json
+    nombre = data.get("nombre")
+    tipo = data.get("tipo")
+    unidad = data.get("unidad")
+
+    sensor, error = actualizar_sensor(id, nombre, tipo, unidad)
+    if error:
+        return jsonify({"error": error}), 400
+
+    return jsonify({
+        "message": "Sensor actualizado exitosamente",
+        "id": sensor.id,
+        "nombre": sensor.nombre,
+        "tipo": sensor.tipo,
+        "unidad": sensor.unidad
+    }), 200
