@@ -1,38 +1,46 @@
 from flask import Blueprint, jsonify, request
-from database.connection import db
-from database.models.voice_config import VoiceConfig 
+from services.voice_service import VoiceService
+from exceptions.custom_exceptions import ValidationException, DatabaseException
+import logging
 
+logger = logging.getLogger(__name__)
 voice_bp = Blueprint('voice', __name__)
 
-# Recupera la configuración de voz guardada. Si no existe, devuelve valores por defecto.
 @voice_bp.get('/voice')
 def get_voice_config():
-    config = VoiceConfig.query.get(1)
-    if config:
+    """Recupera la configuración de voz guardada"""
+    try:
+        config = VoiceService.obtener_configuracion()
         return jsonify(config.to_dict()), 200
-    default_config = VoiceConfig()
-    return jsonify(default_config.to_dict()), 200
+        
+    except DatabaseException as e:
+        logger.error(f"Error al obtener configuración de voz: {e}")
+        return jsonify({"error": str(e)}), 500
+    except Exception as e:
+        logger.error(f"Error inesperado: {e}")
+        return jsonify({"error": "Error interno del servidor"}), 500
 
-# Guarda o actualiza la configuración de voz.
-# Body JSON esperado: {"voice_gender": str, "voice_pitch": float}
 @voice_bp.post('/voice')
 def save_voice_config():
+    """Guarda o actualiza la configuración de voz"""
     data = request.json
-    if 'voice_gender' not in data or 'voice_pitch' not in data:
-        return jsonify({"message": "Faltan parámetros: voice_gender y voice_pitch"}), 400
-
-    gender = data.get('voice_gender')
-    pitch = data.get('voice_pitch')
+    
+    if not data:
+        return jsonify({"error": "Se esperaba un cuerpo JSON"}), 400
+        
     try:
-        config = VoiceConfig.query.get(1)
-        if config is None:
-            config = VoiceConfig(id=1, voice_gender=gender, voice_pitch=pitch)
-            db.session.add(config)
-        else:
-            config.voice_gender = gender
-            config.voice_pitch = pitch
-        db.session.commit()
+        config = VoiceService.guardar_configuracion(
+            voice_gender=data.get('voice_gender'),
+            voice_pitch=data.get('voice_pitch')
+        )
         return jsonify(config.to_dict()), 200
+        
+    except ValidationException as e:
+        logger.warning(f"Validación fallida: {e}")
+        return jsonify({"error": str(e)}), 400
+    except DatabaseException as e:
+        logger.error(f"Error de BD: {e}")
+        return jsonify({"error": str(e)}), 500
     except Exception as e:
-        db.session.rollback()
-        return jsonify({"message": f"Error al guardar la configuración: {str(e)}"}), 500
+        logger.error(f"Error inesperado: {e}")
+        return jsonify({"error": "Error interno del servidor"}), 500

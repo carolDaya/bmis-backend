@@ -18,79 +18,102 @@ except FileNotFoundError:
     modelo_alerta = None
     modelo_tipo = None
 
+
 # -------------------------------------------------------------------
 # AI SERVICE FUNCTIONS
 # -------------------------------------------------------------------
 
 def calcular_dia_proceso(timestamp_str):
     """
-    Calcula el día del proceso basándose en el timestamp de la lectura.
+    Calcula el día del proceso según el timestamp.
     Devuelve 0 si no hay proceso activo.
-    Soporta formatos: '%Y-%m-%d %H:%M:%S' y '%d/%m/%Y %H:%M'.
+    Maneja múltiples formatos de fecha.
     """
     fecha_inicio = obtener_fecha_inicio_proceso_activo()
     if fecha_inicio is None:
         return 0
 
-    for fmt in ("%Y-%m-%d %H:%M:%S", "%d/%m/%Y %H:%M"):
+    # Intentar formatos
+    formatos_admitidos = ("%Y-%m-%d %H:%M:%S", "%d/%m/%Y %H:%M")
+
+    for fmt in formatos_admitidos:
         try:
             timestamp = datetime.strptime(timestamp_str, fmt)
             break
         except ValueError:
             continue
     else:
+        # Timestamp inválido
         return 1
 
     delta = timestamp - fecha_inicio
     return delta.days + 1
 
+
 def predecir_alerta(temperatura, presion, gas, timestamp):
     """
-    Realiza predicción de alerta utilizando modelos de IA.
-    Maneja escenarios donde no hay proceso activo o modelos no cargados.
-    Retorna un diccionario estandarizado con resultados y recomendaciones.
+    Realiza predicción IA.
+    Maneja errores comunes, modelos no cargados, no proceso activo, etc.
+    Retorna un dict estandarizado.
     """
-    if modelo_alerta is None or modelo_tipo is None:
+    try:
+
+        # --- SI NO HAY MODELOS CARGADOS ---
+        if modelo_alerta is None or modelo_tipo is None:
+            return {
+                "alerta_ia": 0,
+                "tipo_estado": "Error de Sistema",
+                "mensaje_lectura": "Modelos de IA no cargados.",
+                "recomendacion": "Ejecute el script de entrenamiento.",
+                "dia_proceso": 0
+            }
+
+        dia_proceso = calcular_dia_proceso(timestamp)
+
+        if dia_proceso == 0:
+            return {
+                "alerta_ia": 0,
+                "tipo_estado": "Proceso finalizado",
+                "mensaje_lectura": "No hay proceso activo. No se generan predicciones.",
+                "recomendacion": "Inicie un nuevo proceso biodigestor.",
+                "dia_proceso": 0
+            }
+
+        # --- Construcción del DataFrame ---
+        entrada = pd.DataFrame([{
+            "temperatura_celsius": temperatura,
+            "presion_biogas_kpa": presion,
+            "mq4_ppm": gas,
+            "dia_proceso": dia_proceso
+        }])
+
+        alerta_pred = int(modelo_alerta.predict(entrada)[0])
+        tipo_pred = str(modelo_tipo.predict(entrada)[0])
+
+        # Obtener recomendaciones según lectura
+        recomendacion_data = obtener_recomendacion(
+            estado=alerta_pred,
+            temperatura=temperatura,
+            presion=presion,
+            gas=gas
+        )
+
         return {
-            "alerta_ia": 0,
-            "tipo_estado": "Error de Sistema",
-            "mensaje_lectura": "Modelos de IA no cargados. Revisar logs del servidor.",
-            "recomendacion": "Ejecute el script de entrenamiento de modelos.",
-            "dia_proceso": 0
+            "alerta_ia": alerta_pred,
+            "tipo_alerta_modelo": tipo_pred,
+            "tipo_estado": recomendacion_data.get("tipo", ""),
+            "mensaje_lectura": recomendacion_data.get("mensaje", ""),
+            "recomendacion": recomendacion_data.get("recomendacion", ""),
+            "dia_proceso": dia_proceso
         }
 
-    dia_proceso = calcular_dia_proceso(timestamp)
-    if dia_proceso == 0:
+    except Exception as e:
+        # Error interno del modelo o datos
         return {
             "alerta_ia": 0,
-            "tipo_estado": "Proceso finalizado",
-            "mensaje_lectura": "No hay proceso activo. No se generan predicciones.",
-            "recomendacion": "Inicie un nuevo proceso biodigestor.",
-            "dia_proceso": 0
+            "tipo_estado": "Error interno IA",
+            "mensaje_lectura": "Ocurrió un error durante la predicción.",
+            "recomendacion": "Revise los logs del servidor.",
+            "dia_proceso": 0,
+            "detalle_error": str(e)
         }
-
-    entrada = pd.DataFrame([{
-        "temperatura_celsius": temperatura,
-        "presion_biogas_kpa": presion,
-        "mq4_ppm": gas,
-        "dia_proceso": dia_proceso
-    }])
-
-    alerta_pred = int(modelo_alerta.predict(entrada)[0])
-    tipo_pred = str(modelo_tipo.predict(entrada)[0])
-
-    recomendacion_data = obtener_recomendacion(
-        estado=alerta_pred,
-        temperatura=temperatura,
-        presion=presion,
-        gas=gas
-    )
-
-    return {
-        "alerta_ia": alerta_pred,
-        "tipo_alerta_modelo": tipo_pred,
-        "tipo_estado": recomendacion_data.get("tipo", ""),
-        "mensaje_lectura": recomendacion_data.get("mensaje", ""),
-        "recomendacion": recomendacion_data.get("recomendacion", ""),
-        "dia_proceso": dia_proceso
-    }

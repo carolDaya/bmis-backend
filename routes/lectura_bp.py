@@ -3,6 +3,7 @@ from services.lectura_service import (
     registrar_lectura, obtener_lecturas,
     obtener_lecturas_por_sensor, eliminar_lecturas_sensor
 )
+from exceptions.custom_exceptions import ValidationException
 
 lectura_bp = Blueprint("lectura", __name__)
 
@@ -21,9 +22,8 @@ def create_lectura():
 
     try:
         lectura = registrar_lectura(sensor_id, valor, observaciones)
-    except RuntimeError as e:
-        # Captura el error si no hay proceso activo
-        return jsonify({"error": str(e)}), 409 
+    except ValidationException as e:
+        return jsonify({"error": str(e)}), e.status_code
 
     return jsonify({
         "message": "Lectura registrada exitosamente",
@@ -34,28 +34,59 @@ def create_lectura():
         "observaciones": lectura.observaciones
     }), 201
 
-# Obtiene todas las lecturas registradas.
+
 @lectura_bp.get("/lecturas")
 def get_lecturas():
-    lecturas = obtener_lecturas()
-    result = [{
-        "id": l.id,
-        "sensor_id": l.sensor_id,
-        "valor": l.valor,
-        "fecha_hora": l.fecha_hora.isoformat(),
-        "observaciones": l.observaciones
-    } for l in lecturas]
-    return jsonify(result), 200
+    """
+    Agregada paginación para evitar memory overflow
+    Query params: ?page=1&per_page=50
+    """
+    try:
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 50, type=int)
+        
+        # Limitar máximo de registros por página
+        per_page = min(per_page, 100)
+        
+        # Obtener lecturas paginadas
+        from database.models.lectura import Lectura
+        from sqlalchemy import desc
+        
+        pagination = Lectura.query.order_by(desc(Lectura.fecha_hora))\
+            .paginate(page=page, per_page=per_page, error_out=False)
+        
+        result = {
+            "lecturas": [{
+                "id": l.id,
+                "sensor_id": l.sensor_id,
+                "valor": l.valor,
+                "fecha_hora": l.fecha_hora.isoformat(),
+                "observaciones": l.observaciones
+            } for l in pagination.items],
+            "total": pagination.total,
+            "pages": pagination.pages,
+            "current_page": page,
+            "per_page": per_page
+        }
+        
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({"error": f"Error al obtener lecturas: {e}"}), 500
 
-# Obtiene las últimas lecturas de un sensor específico (máx 20) del PROCESO ACTIVO.
+
 @lectura_bp.get("/lecturas/<int:sensor_id>")
 def get_lecturas_por_sensor_endpoint(sensor_id):
+    """
+    Obtiene las últimas lecturas de un sensor específico del PROCESO ACTIVO.
+    Query param: ?limit=20 (default: 20, max: 100)
+    """
     try:
-        # Esta llamada ahora trae solo datos del proceso activo o []
-        lecturas = obtener_lecturas_por_sensor(sensor_id, limite=20)
+        limite = request.args.get('limit', 20, type=int)
+        limite = min(limite, 100) #Máximo 100 registros
+        
+        lecturas = obtener_lecturas_por_sensor(sensor_id, limite=limite)
         
         if not lecturas:
-            # Si no hay lecturas, retorna lista vacía 200 OK.
             return jsonify([]), 200 
         
         result = [{

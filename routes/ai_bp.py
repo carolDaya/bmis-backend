@@ -7,15 +7,19 @@ ai_bp = Blueprint("ai_bp", __name__)
 @ai_bp.get("/analizar")
 def analizar_biodigestor():
     """
-    Endpoint de análisis de biodigestor que unifica la respuesta de error de 'no datos' y 'no proceso'.
+    Endpoint principal de análisis del biodigestor.
+    Maneja:
+      - Sin proceso
+      - Sin lecturas
+      - Predicción exitosa
+      - Errores internos
     """
     try:
-        # Verifica si hay proceso activo
-        proceso = hay_proceso_activo()  # retorna objeto ProcesoBiodigestor o None
-        print(f"DEBUG LOG: Valor de 'proceso' en el endpoint: {proceso}")
-        
+        proceso = hay_proceso_activo()
+        print(f"DEBUG LOG: Proceso activo → {proceso}")
+
+        # --- SIN PROCESO ACTIVO ---
         if proceso is None:
-            # Caso 1: No hay proceso activo
             return jsonify({
                 "alerta_ia": 0,
                 "dia_proceso": 0,
@@ -24,34 +28,31 @@ def analizar_biodigestor():
                 "tipo_estado": "Proceso finalizado"
             }), 200
 
-        # Intentamos obtener la última lectura combinada del proceso activo
+        # --- PROCESO ACTIVO PERO SIN LECTURAS ---
         try:
             lectura = obtener_ultima_lectura_combinada()
         except LecturaException as le:
-            # Caso 2: Proceso activo pero aún no hay lecturas completas
             return jsonify({
                 "alerta_ia": 0,
                 "dia_proceso": 0,
-                "mensaje_lectura": "Proceso activo, pero aún no hay datos completos de sensores.",
-                "recomendacion": "Espere a que se registren todas las lecturas.",
+                "mensaje_lectura": "Proceso activo, pero aún no hay lecturas completas.",
+                "recomendacion": "Espere a que se registren datos.",
                 "tipo_estado": "Proceso activo",
                 "detalle": str(le)
             }), 200
 
-        # Caso 3: Lecturas completas → hacer predicción
+        # --- LECTURA COMPLETA → PREDICCIÓN ---
         temperatura, presion, gas, timestamp = lectura
         resultado = predecir_alerta(temperatura, presion, gas, timestamp)
-
         return jsonify(resultado), 200
 
     except Exception as e:
-        # Cualquier otro error inesperado
-        print(f"Error durante el procesamiento de la predicción de IA: {e}")
+        print(f"ERROR FATAL EN /analizar → {e}")
         return jsonify({
             "alerta_ia": 0,
             "dia_proceso": 0,
             "mensaje_lectura": "Error interno del servidor al procesar la predicción.",
-            "recomendacion": "Revise los logs del servidor.",
+            "recomendacion": "Revise logs.",
             "tipo_estado": "Error",
             "detalle": str(e)
         }), 500

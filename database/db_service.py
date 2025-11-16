@@ -1,53 +1,25 @@
+# database/db_service.py
+import logging
 from database.models.lectura import Lectura
+from database.models.proceso_biodigestor import ProcesoBiodigestor
+from database.models.sensor import Sensor
 from database.connection import db
 from sqlalchemy import desc
-from database.models.proceso_biodigestor import ProcesoBiodigestor
+from exceptions.custom_exceptions import ResourceNotFoundException
 
-SENSOR_IDS = {
-    "gas": 1,
-    "temperatura": 2,
-    "presion": 3
-}
+logger = logging.getLogger(__name__)
 
 class LecturaException(Exception):
     pass
 
-def obtener_ultima_lectura_combinada():
-    """
-    Retorna una tupla: (temperatura, presion, gas, timestamp)
-    Solo considera lecturas del proceso ACTIVO.
-    Lanza LecturaException si faltan datos.
-    """
-    try:
-        # Obtiene el proceso activo
-        proceso_activo = hay_proceso_activo()
-        if not proceso_activo:
-            raise LecturaException("No hay proceso activo para obtener lecturas.")
 
-        proceso_id = proceso_activo.id
-
-        # Obtener la última lectura de cada sensor para el proceso activo
-        ultima_temp = Lectura.query.filter_by(sensor_id=SENSOR_IDS["temperatura"], proceso_id=proceso_id)\
-            .order_by(desc(Lectura.fecha_hora)).first()
-        ultima_pres = Lectura.query.filter_by(sensor_id=SENSOR_IDS["presion"], proceso_id=proceso_id)\
-            .order_by(desc(Lectura.fecha_hora)).first()
-        ultima_gas = Lectura.query.filter_by(sensor_id=SENSOR_IDS["gas"], proceso_id=proceso_id)\
-            .order_by(desc(Lectura.fecha_hora)).first()
-
-        # Verificación: si alguna lectura falta
-        if not (ultima_temp and ultima_pres and ultima_gas):
-            raise LecturaException("Proceso activo sin lecturas completas aún.")
-
-        temperatura = float(ultima_temp.valor)
-        presion = float(ultima_pres.valor)
-        gas = float(ultima_gas.valor)
-        # Usamos la fecha más reciente entre las tres lecturas
-        timestamp = max(ultima_temp.fecha_hora, ultima_pres.fecha_hora, ultima_gas.fecha_hora)
-
-        return (temperatura, presion, gas, str(timestamp))
-
-    except Exception as e:
-        raise LecturaException(f"{e}")
+def get_sensor_id_by_name(nombre):
+    """Obtiene ID de sensor por nombre"""
+    sensor = Sensor.query.filter_by(nombre=nombre).first()
+    if not sensor:
+        logger.error(f"Sensor no encontrado: {nombre}")
+        raise ResourceNotFoundException(f"Sensor '{nombre}' no encontrado")
+    return sensor.id
 
 
 def obtener_fecha_inicio_proceso_activo():
@@ -57,19 +29,66 @@ def obtener_fecha_inicio_proceso_activo():
     proceso = ProcesoBiodigestor.query.filter_by(estado='ACTIVO').first()
     return proceso.fecha_inicio if proceso else None
 
+
 def hay_proceso_activo():
-    """
-    Verifica si existe un registro de ProcesoBiodigestor con estado 'ACTIVO'.
-
-    :return: El objeto ProcesoBiodigestor activo si existe, de lo contrario None.
-    """
-    # 1. Ejecuta la consulta
-    proceso_activo = ProcesoBiodigestor.query.filter_by(estado='ACTIVO').first()
-
-    # 2. 🚨 LOG DE VERIFICACIÓN 🚨
-    if proceso_activo:
-        print(f"✅ DB LOG: Proceso ACTIVO encontrado. ID: {proceso_activo.id}, Estado: {proceso_activo.estado}")
-    else:
-        print("❌ DB LOG: NO se encontró ningún Proceso ACTIVO.")
+    """Verifica proceso activo con logging"""
+    proceso = ProcesoBiodigestor.query.filter_by(estado='ACTIVO').first()
     
-    return proceso_activo
+    if proceso:
+        logger.debug(f"Proceso activo encontrado: ID={proceso.id}")
+    else:
+        logger.debug("No hay proceso activo")
+    
+    return proceso
+
+
+def obtener_ultima_lectura_combinada():
+    """Obtiene última lectura de todos los sensores del proceso activo"""
+    logger.info("Obteniendo última lectura combinada")
+    
+    try:
+        proceso_activo = hay_proceso_activo()
+        if not proceso_activo:
+            raise LecturaException("No hay proceso activo")
+        
+        proceso_id = proceso_activo.id
+        
+        # Obtener IDs dinámicamente
+        sensor_temp_id = get_sensor_id_by_name("temperatura")
+        sensor_pres_id = get_sensor_id_by_name("presion")
+        sensor_gas_id = get_sensor_id_by_name("gas")
+        
+        # Queries individuales
+        ultima_temp = Lectura.query\
+            .filter_by(sensor_id=sensor_temp_id, proceso_id=proceso_id)\
+            .order_by(desc(Lectura.fecha_hora)).first()
+            
+        ultima_pres = Lectura.query\
+            .filter_by(sensor_id=sensor_pres_id, proceso_id=proceso_id)\
+            .order_by(desc(Lectura.fecha_hora)).first()
+            
+        ultima_gas = Lectura.query\
+            .filter_by(sensor_id=sensor_gas_id, proceso_id=proceso_id)\
+            .order_by(desc(Lectura.fecha_hora)).first()
+        
+        if not all([ultima_temp, ultima_pres, ultima_gas]):
+            logger.warning("Proceso activo sin lecturas completas")
+            raise LecturaException("Proceso activo sin lecturas completas")
+        
+        temperatura = float(ultima_temp.valor)
+        presion = float(ultima_pres.valor)
+        gas = float(ultima_gas.valor)
+        timestamp = max(
+            ultima_temp.fecha_hora,
+            ultima_pres.fecha_hora,
+            ultima_gas.fecha_hora
+        )
+        
+        logger.info(f"Lectura combinada obtenida: T={temperatura}, P={presion}, G={gas}")
+        return (temperatura, presion, gas, timestamp.isoformat())
+        
+    except LecturaException:
+        raise
+    except Exception as e:
+        logger.error(f"Error al obtener lectura combinada: {e}", exc_info=True)
+        raise LecturaException(f"Error al obtener lecturas: {str(e)}")

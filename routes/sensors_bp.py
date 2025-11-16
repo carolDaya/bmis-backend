@@ -1,38 +1,42 @@
+import logging
 from flask import Blueprint, request, jsonify
 from services.sensor_service import (
-    crear_sensor, obtener_sensores, obtener_sensor_por_id,
-    actualizar_sensor, eliminar_sensor
+    crear_sensor, obtener_sensores, obtener_sensor_por_id
 )
-
+from utils.validators import require_json, validate_positive_number
+from exceptions.custom_exceptions import (
+    ValidationException
+)
+logger = logging.getLogger(__name__)
 sensors_bp = Blueprint("sensor", __name__)
 
-# Crea un nuevo sensor.
-# Body JSON esperado: {"nombre": str, "tipo": str, "unidad": str}
 @sensors_bp.post("/sensores")
+@require_json('nombre', 'tipo', 'unidad')
 def create_sensor():
+    """Crea sensor con validación automática"""
     data = request.json
-    nombre = data.get("nombre")
-    tipo = data.get("tipo")
-    unidad = data.get("unidad")
-
-    if not nombre or not tipo or not unidad:
-        return jsonify({"error": "Faltan datos obligatorios"}), 400
-
-    sensor, error = crear_sensor(nombre, tipo, unidad)
-    if error:
-        return jsonify({"error": error}), 400
-
+    
+    sensor = crear_sensor(
+        nombre=data['nombre'],
+        tipo=data['tipo'],
+        unidad=data['unidad']
+    )
+    
     return jsonify({
         "message": "Sensor creado exitosamente",
-        "id": sensor.id,
-        "nombre": sensor.nombre,
-        "tipo": sensor.tipo,
-        "unidad": sensor.unidad
+        **sensor.to_dict()
     }), 201
 
-# Obtiene todos los sensores registrados.
+
 @sensors_bp.get("/sensores")
 def get_sensors():
+    """Lista todos los sensores"""
     sensores = obtener_sensores()
-    result = [{"id": s.id, "nombre": s.nombre, "tipo": s.tipo, "unidad": s.unidad} for s in sensores]
-    return jsonify(result), 200
+    return jsonify([s.to_dict() for s in sensores]), 200
+
+
+@sensors_bp.get("/sensores/<int:sensor_id>")
+def get_sensor(sensor_id):
+    """Obtiene un sensor por ID"""
+    sensor = obtener_sensor_por_id(sensor_id)
+    return jsonify(sensor.to_dict()), 200

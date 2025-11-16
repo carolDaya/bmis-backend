@@ -1,49 +1,72 @@
+import logging
 from database.models.sensor import Sensor
 from database.connection import db
+from exceptions.custom_exceptions import ValidationException, DatabaseException
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+
+logger = logging.getLogger(__name__)
 
 def crear_sensor(nombre, tipo, unidad):
-    """Crea un nuevo sensor si no existe otro con el mismo nombre."""
+    """Crea un nuevo sensor con validación y logging"""
+    logger.info(f"Intentando crear sensor: {nombre}")
+    
+    # Validación de duplicados
     if Sensor.query.filter_by(nombre=nombre).first():
-        raise ValueError("Ya existe un sensor con ese nombre.")
+        logger.warning(f"Intento de crear sensor duplicado: {nombre}")
+        raise ValidationException(
+            f"Ya existe un sensor con el nombre '{nombre}'",
+            status_code=409
+        )
+    
     sensor = Sensor(nombre=nombre, tipo=tipo, unidad=unidad)
+    
     try:
         db.session.add(sensor)
         db.session.commit()
+        logger.info(f"Sensor creado exitosamente: ID={sensor.id}, nombre={nombre}")
         return sensor
+        
+    except IntegrityError as e:
+        db.session.rollback()
+        logger.error(f"Error de integridad al crear sensor: {e}")
+        raise DatabaseException(
+            "Error de integridad al crear el sensor",
+            details=str(e.orig) if hasattr(e, 'orig') else str(e)
+        )
+        
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        logger.error(f"Error de base de datos al crear sensor: {e}")
+        raise DatabaseException(
+            "Error al guardar el sensor en la base de datos",
+            details=str(e)
+        )
+        
     except Exception as e:
         db.session.rollback()
-        raise RuntimeError(f"Error al crear sensor: {e}")
+        logger.error(f"Error inesperado al crear sensor: {e}", exc_info=True)
+        raise DatabaseException(f"Error inesperado: {str(e)}")
+
 
 def obtener_sensores():
-    return Sensor.query.all()
+    """Obtiene todos los sensores con logging"""
+    logger.info("Obteniendo lista de sensores")
+    try:
+        sensores = Sensor.query.all()
+        logger.info(f"Se obtuvieron {len(sensores)} sensores")
+        return sensores
+    except SQLAlchemyError as e:
+        logger.error(f"Error al obtener sensores: {e}")
+        raise DatabaseException("Error al obtener la lista de sensores")
+
 
 def obtener_sensor_por_id(sensor_id):
-    return Sensor.query.get(sensor_id)
-
-def actualizar_sensor(sensor_id, nombre=None, tipo=None, unidad=None, activo=None):
+    """Obtiene un sensor por ID con validación"""
+    logger.info(f"Buscando sensor con ID: {sensor_id}")
     sensor = Sensor.query.get(sensor_id)
+    
     if not sensor:
-        raise ValueError("Sensor no encontrado.")
-    if nombre: sensor.nombre = nombre
-    if tipo: sensor.tipo = tipo
-    if unidad: sensor.unidad = unidad
-    if activo is not None: sensor.activo = activo
-    try:
-        db.session.commit()
-        return sensor
-    except Exception as e:
-        db.session.rollback()
-        raise RuntimeError(f"Error al actualizar sensor: {e}")
-
-def eliminar_sensor(sensor_id):
-    """Marca un sensor como inactivo en lugar de eliminarlo."""
-    sensor = Sensor.query.get(sensor_id)
-    if not sensor:
-        raise ValueError("Sensor no encontrado.")
-    sensor.activo = False
-    try:
-        db.session.commit()
-        return sensor
-    except Exception as e:
-        db.session.rollback()
-        raise RuntimeError(f"Error al desactivar sensor: {e}")
+        logger.warning(f"Sensor no encontrado: ID={sensor_id}")
+        raise ValidationException(f"Sensor con ID {sensor_id} no encontrado", status_code=404)
+    
+    return sensor
