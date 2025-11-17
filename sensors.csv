@@ -1,0 +1,241 @@
+dia_proceso,fase_proceso,temperatura_celsius,presion_biogas_kpa,mq4_ppm,alerta_ia,tipo_alerta
+1,Latencia,36.92,102.09,308.19,False,Normal
+1,Latencia,36.54,105.25,310.24,False,Normal
+1,Latencia,37.54,108.67,232.09,False,Normal
+1,Latencia,36.39,113.13,246.40,False,Normal
+1,Latencia,36.73,117.01,247.99,False,Normal
+1,Latencia,35.94,121.16,200.74,False,Normal
+1,Latencia,36.22,125.13,303.49,False,Normal
+1,Latencia,35.29,128.33,221.73,False,Normal
+2,Latencia,35.75,132.20,214.29,False,Normal
+2,Latencia,35.35,135.95,316.96,False,Normal
+2,Latencia,35.85,139.83,304.60,False,Normal
+2,Latencia,35.70,143.32,238.12,False,Normal
+2,Latencia,34.31,146.80,211.75,False,Normal
+2,Latencia,36.79,150.95,204.79,False,Normal
+2,Latencia,38.00,154.84,205.88,False,Normal
+2,Latencia,37.21,158.33,309.85,False,Normal
+3,Latencia,36.17,162.38,209.61,False,Normal
+3,Latencia,35.64,166.26,200.75,False,Normal
+3,Latencia,36.99,170.32,216.76,False,Normal
+3,Latencia,35.62,174.86,248.33,False,Normal
+3,Latencia,36.21,178.29,209.81,False,Normal
+3,Latencia,36.70,182.58,203.55,False,Normal
+3,Latencia,35.06,186.88,205.09,False,Normal
+3,Latencia,37.13,190.59,285.88,False,Normal
+4,Latencia,34.63,194.17,311.97,False,Normal
+4,Latencia,34.83,198.78,226.71,False,Normal
+4,Latencia,36.14,202.56,314.72,False,Normal
+4,Latencia,36.15,206.30,226.97,False,Normal
+4,Latencia,36.17,210.14,270.84,False,Normal
+4,Latencia,36.02,214.73,303.47,False,Normal
+4,Latencia,36.12,218.02,201.42,False,Normal
+4,Latencia,36.78,222.26,211.38,False,Normal
+5,Latencia,35.10,226.43,218.43,False,Normal
+5,Latencia,34.97,230.13,213.62,False,Normal
+5,Latencia,36.23,234.22,210.80,False,Normal
+5,Latencia,34.35,238.37,202.05,False,Normal
+5,Latencia,37.11,242.28,202.02,False,Normal
+5,Latencia,35.70,246.88,208.53,False,Normal
+5,Latencia,37.10,250.14,219.01,False,Normal
+5,Latencia,37.88,254.67,313.31,False,Normal
+6,Latencia,36.02,258.62,245.92,False,Normal
+6,Latencia,32.70,262.42,308.53,False,Normal
+6,Latencia,34.82,266.53,203.88,False,Normal
+6,Latencia,34.56,270.46,209.68,False,Normal
+6,Latencia,36.53,274.74,290.47,False,Normal
+6,Latencia,37.12,278.82,277.86,False,Normal
+6,Latencia,35.99,282.69,215.93,False,Normal
+6,Latencia,35.64,286.60,216.79,False,Normal
+7,Latencia,35.72,290.01,306.84,False,Normal
+7,Latencia,36.29,293.68,310.83,False,Normal
+7,Latencia,34.45,297.24,284.14,False,Normal
+7,Latencia,38.08,301.42,221.75,False,Normal
+7,Latencia,35.58,305.12,208.56,False,Normal
+7,Latencia,36.66,309.62,207.96,False,Normal
+7,Latencia,37.38,313.90,278.41,False,Normal
+7,Latencia,36.17,318.12,305.11,False,Normal
+8,Activa,36.95,322.36,5887.89,True,Concentración CH4 Alta
+8,Activa,34.82,328.79,6320.10,True,Concentración CH4 Alta
+8,Activa,35.42,334.67,5908.57,False,Normal
+8,Activa,36.23,340.96,5732.06,False,Normal
+8,Activa,37.15,346.18,2742.72,True,Baja Producción
+8,Activa,36.36,351.59,2070.78,True,Baja Producción
+8,Activa,36.91,357.67,2451.92,True,Baja Producción
+8,Activa,36.13,363.54,6084.78,True,Concentración CH4 Alta
+9,Activa,37.18,369.65,6089.43,True,Concentración CH4 Alta
+9,Activa,35.61,375.24,5678.72,False,Normal
+9,Activa,37.23,381.43,6363.30,True,Concentración CH4 Alta
+9,Activa,35.49,387.01,6235.62,True,Concentración CH4 Alta
+9,Activa,35.86,392.80,6011.08,True,Concentración CH4 Alta
+9,Activa,36.63,398.77,5634.02,False,Normal
+9,Activa,35.98,404.50,6016.92,True,Concentración CH4 Alta
+9,Activa,36.57,410.33,5590.23,False,Normal
+10,Activa,37.24,416.83,5622.38,False,Normal
+10,Activa,34.68,422.47,5331.07,False,Normal
+10,Activa,35.87,428.88,6385.34,True,Concentración CH4 Alta
+10,Activa,36.06,434.47,5380.13,False,Normal
+10,Activa,35.98,440.44,6261.33,True,Concentración CH4 Alta
+10,Activa,35.02,446.16,6466.70,True,Concentración CH4 Alta
+10,Activa,35.29,452.88,5231.58,False,Normal
+10,Activa,36.26,458.03,5958.08,False,Normal
+11,Activa,37.50,464.89,6493.99,True,Concentración CH4 Alta
+11,Activa,36.18,470.51,5401.55,False,Normal
+11,Activa,37.35,476.11,6452.51,True,Concentración CH4 Alta
+11,Activa,36.83,482.31,6218.43,True,Concentración CH4 Alta
+11,Activa,35.73,488.82,5987.16,False,Normal
+11,Activa,36.08,494.98,5380.13,False,Normal
+11,Activa,36.49,500.87,5752.13,False,Normal
+11,Activa,36.85,506.07,5847.01,False,Normal
+12,Activa,35.78,512.38,6139.12,True,Concentración CH4 Alta
+12,Activa,35.65,518.45,6089.43,True,Concentración CH4 Alta
+12,Activa,35.16,524.44,5183.09,False,Normal
+12,Activa,35.26,530.29,5965.34,False,Normal
+12,Activa,36.20,536.64,6094.70,True,Concentración CH4 Alta
+12,Activa,34.99,542.78,6408.57,True,Concentración CH4 Alta
+12,Activa,37.14,548.62,5601.53,False,Normal
+12,Activa,36.11,554.75,5443.44,False,Normal
+13,Activa,37.33,560.25,5476.54,False,Normal
+13,Activa,34.91,566.45,6389.17,True,Concentración CH4 Alta
+13,Activa,36.97,572.94,6259.18,True,Concentración CH4 Alta
+13,Activa,36.43,578.43,5824.28,False,Normal
+13,Activa,37.24,590.56,6144.24,True,Concentración CH4 Alta
+13,Activa,26.63,578.52,3444.61,True,Temperatura Anormal
+13,Activa,25.80,586.38,3201.45,True,Temperatura Anormal
+13,Activa,39.85,592.46,2987.32,True,Temperatura Anormal
+14,Activa,40.12,604.44,3102.67,True,Temperatura Anormal
+14,Activa,38.04,610.68,6245.02,True,Concentración CH4 Alta
+14,Activa,36.55,616.23,5877.95,False,Normal
+14,Activa,24.75,622.23,2654.89,True,Temperatura Anormal
+14,Activa,35.56,628.29,6068.08,True,Concentración CH4 Alta
+14,Activa,41.30,634.10,2890.45,True,Temperatura Anormal
+14,Activa,34.29,640.53,6094.70,True,Concentración CH4 Alta
+14,Activa,23.95,646.27,2456.78,True,Temperatura Anormal
+15,Activa,37.68,652.57,4356.97,True,Presión Alta
+15,Activa,36.59,658.01,5493.59,False,Normal
+15,Activa,36.90,664.62,5708.38,False,Normal
+15,Activa,37.36,670.59,4763.03,False,Normal
+15,Activa,42.15,682.09,2678.91,True,Temperatura Anormal
+15,Activa,36.65,688.43,5708.38,False,Normal
+15,Activa,37.57,694.58,6437.91,True,Concentración CH4 Alta
+15,Activa,36.37,700.21,5847.01,False,Normal
+16,Activa,36.85,706.27,5493.59,True,Presión Alta
+16,Activa,36.70,712.63,6185.17,True,Presión Alta
+16,Activa,36.78,718.43,4356.97,False,Normal
+16,Activa,22.45,724.74,1987.65,True,Temperatura Anormal
+16,Activa,35.36,730.29,5509.84,False,Normal
+16,Activa,35.01,736.79,6189.43,True,Concentración CH4 Alta
+16,Activa,37.36,742.20,5476.54,False,Normal
+16,Activa,35.17,748.84,5922.37,False,Normal
+17,Activa,35.17,754.61,5678.72,True,Presión Alta
+17,Activa,36.08,760.78,5311.91,False,Normal
+17,Activa,37.18,766.02,5132.74,False,Normal
+17,Activa,43.25,772.56,2789.34,True,Temperatura Anormal
+17,Activa,35.32,778.97,6161.33,True,Presión Alta
+17,Activa,36.77,784.66,6493.59,True,Presión Crítica
+17,Activa,36.71,790.07,5531.07,True,Presión Crítica
+17,Activa,36.99,796.54,6089.43,True,Presión Crítica
+18,Activa,36.74,802.71,5311.91,True,Presión Crítica
+18,Activa,21.80,808.05,1876.43,True,Temperatura Anormal
+18,Activa,36.21,814.62,6670.41,True,Presión Crítica
+18,Activa,44.50,820.96,2456.89,True,Temperatura Anormal
+18,Activa,35.17,826.69,5378.09,True,Presión Crítica
+18,Activa,35.41,832.94,5380.13,True,Presión Crítica
+18,Activa,36.90,839.39,5183.09,True,Presión Crítica
+18,Activa,20.75,845.76,1654.32,True,Temperatura Anormal
+19,Activa,36.41,851.32,5212.72,True,Presión Crítica
+19,Activa,45.20,856.76,2234.56,True,Temperatura Anormal
+19,Activa,38.33,862.44,5416.79,True,Presión Crítica
+19,Activa,19.95,868.10,1423.78,True,Temperatura Anormal
+19,Activa,35.81,873.60,5869.17,True,Presión Crítica
+19,Activa,36.61,878.80,6304.70,True,Presión Crítica
+19,Activa,36.84,884.48,5922.37,True,Presión Crítica
+19,Activa,46.80,891.77,1987.45,True,Temperatura Anormal
+20,Activa,37.72,896.17,5561.41,True,Presión Crítica
+20,Activa,18.25,900.87,1234.56,True,Temperatura Anormal
+20,Activa,36.48,905.58,5896.79,True,Presión Crítica
+20,Activa,47.15,910.52,1765.43,True,Temperatura Anormal
+20,Activa,35.27,915.77,5886.99,True,Presión Crítica
+20,Activa,35.80,920.30,6535.15,True,Presión Crítica
+20,Activa,36.60,925.20,6245.02,True,Presión Crítica
+20,Activa,48.30,930.00,1543.21,True,Temperatura Anormal
+21,Activa,36.86,934.66,6460.82,True,Presión Crítica
+21,Activa,17.80,939.59,1123.45,True,Temperatura Anormal
+21,Activa,33.82,944.75,5886.99,True,Presión Crítica
+21,Activa,49.25,949.80,1432.10,True,Temperatura Anormal
+21,Activa,37.14,954.65,2700.02,True,Baja Producción
+21,Activa,35.68,959.21,2368.75,True,Baja Producción
+21,Activa,36.33,963.70,2927.42,True,Baja Producción
+21,Activa,36.29,968.81,6500.00,True,Presión Crítica
+22,Activa,35.94,973.52,5212.72,True,Presión Crítica
+22,Activa,16.45,978.68,987.65,True,Temperatura Anormal
+22,Activa,35.27,983.34,6200.00,True,Presión Crítica
+22,Activa,50.80,987.96,1321.09,True,Temperatura Anormal
+22,Activa,35.09,992.23,6094.70,True,Presión Crítica
+22,Activa,36.75,996.71,4867.24,True,Presión Crítica
+22,Activa,15.20,1001.41,876.54,True,Temperatura Anormal
+22,Activa,36.21,1006.05,5943.42,True,Presión Crítica
+23,Activa,37.72,1010.06,6670.41,True,Presión Crítica
+23,Activa,14.75,1014.68,765.43,True,Temperatura Anormal
+23,Activa,37.62,1018.66,5401.55,True,Presión Crítica
+23,Activa,52.15,1025.74,1210.98,True,Temperatura Anormal
+23,Activa,35.25,1030.21,2110.02,True,Baja Producción
+23,Activa,37.11,1034.10,3247.77,True,Baja Producción
+23,Activa,35.94,1038.54,2542.72,True,Baja Producción
+23,Activa,36.28,1042.61,5378.09,True,Presión Crítica
+24,Activa,37.58,1046.44,5965.34,True,Presión Crítica
+24,Activa,13.90,1050.37,654.32,True,Temperatura Anormal
+24,Activa,36.00,1054.61,4835.22,True,Presión Crítica
+24,Activa,53.80,1058.21,1109.87,True,Temperatura Anormal
+24,Activa,35.82,1062.84,5085.34,True,Presión Crítica
+24,Activa,36.09,1066.09,6118.43,True,Presión Crítica
+24,Activa,12.25,1070.78,543.21,True,Temperatura Anormal
+24,Activa,34.98,1074.26,5183.09,True,Presión Crítica
+25,Activa,35.84,1078.31,5981.31,True,Presión Crítica
+25,Activa,11.80,1082.12,432.10,True,Temperatura Anormal
+25,Activa,36.75,1086.15,6230.15,True,Presión Crítica
+25,Activa,55.45,1090.41,987.65,True,Temperatura Anormal
+25,Activa,35.79,1094.46,6094.70,True,Presión Crítica
+25,Activa,36.32,1098.89,5056.84,True,Presión Crítica
+25,Activa,36.65,1102.53,4835.22,True,Presión Crítica
+25,Activa,10.95,1106.79,321.09,True,Temperatura Anormal
+26,Activa,34.81,1110.40,5601.53,True,Presión Crítica
+26,Activa,9.50,1114.15,210.98,True,Temperatura Anormal
+26,Activa,35.34,1118.51,5056.84,True,Presión Crítica
+26,Activa,57.20,1122.03,876.54,True,Temperatura Anormal
+26,Activa,34.68,1126.64,4493.59,True,Presión Crítica
+26,Activa,37.15,1130.02,6412.35,True,Presión Crítica
+26,Activa,35.55,1134.40,6101.68,True,Presión Crítica
+26,Activa,8.75,1138.01,198.76,True,Temperatura Anormal
+27,Activa,37.60,1142.55,6012.23,True,Presión Crítica
+27,Activa,7.80,1146.90,165.43,True,Temperatura Anormal
+27,Activa,35.15,1150.58,6056.90,True,Presión Crítica
+27,Activa,59.85,1154.01,765.43,True,Temperatura Anormal
+27,Activa,37.10,1158.33,6012.46,True,Presión Crítica
+27,Activa,34.90,1162.99,4789.57,True,Presión Crítica
+27,Activa,36.00,1166.99,6023.33,True,Presión Crítica
+27,Activa,6.25,1170.77,143.21,True,Temperatura Anormal
+28,Activa,37.40,1174.01,6012.78,True,Presión Crítica
+28,Activa,5.90,1178.90,109.87,True,Temperatura Anormal
+28,Activa,36.87,1182.32,6408.57,True,Presión Crítica
+28,Activa,62.30,1186.17,654.32,True,Temperatura Anormal
+28,Activa,37.01,1189.70,6012.09,True,Presión Crítica
+28,Activa,34.80,1192.55,4789.20,True,Presión Crítica
+28,Activa,35.44,1195.05,5734.76,True,Presión Crítica
+28,Activa,4.75,1197.05,98.76,True,Temperatura Anormal
+29,Activa,37.45,1198.11,6012.41,True,Presión Crítica
+29,Activa,3.80,1199.42,76.54,True,Temperatura Anormal
+29,Activa,36.40,1199.20,6156.18,True,Presión Crítica
+29,Activa,65.15,1198.50,543.21,True,Temperatura Anormal
+29,Activa,37.00,1197.74,6012.74,True,Presión Crítica
+29,Activa,34.55,1196.10,4789.95,True,Presión Crítica
+29,Activa,36.75,1194.10,6156.51,True,Presión Crítica
+29,Activa,2.95,1192.60,65.43,True,Temperatura Anormal
+30,Activa,37.15,1190.05,6012.05,True,Presión Crítica
+30,Activa,1.80,1188.12,43.21,True,Temperatura Anormal
+30,Activa,35.10,1185.19,5734.72,True,Presión Crítica
+30,Activa,68.90,1182.55,432.10,True,Temperatura Anormal
+30,Activa,37.05,1179.70,6012.37,True,Presión Crítica
+30,Activa,36.15,1176.10,5901.71,True,Presión Crítica
+30,Activa,36.75,1172.05,6156.14,True,Presión Crítica
+30,Activa,0.75,1168.90,21.09,True,Temperatura Anormal

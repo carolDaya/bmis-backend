@@ -1,0 +1,23 @@
+# render.yaml
+services:
+  - type: web
+    name: biodigestor-backend
+    env: docker
+    plan: free
+    docker:
+      dockerfile: Dockerfile
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: DB_HOST
+        value: mysql-2091b046-serranocarddayana-b729.e.aivencloud.com
+      - key: DB_USER
+        value: avnadmin
+      - key: DB_PASSWORD
+        value: your_aiven_password_here  # Esto se configurará en Render UI
+      - key: DB_PORT
+        value: 13138
+      - key: DB_NAME
+        value: defaultdb
+      - key: SECRET_KEY
+        generateValue: true
