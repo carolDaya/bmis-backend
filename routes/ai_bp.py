@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify
 from services.ai_service import predecir_alerta
-from database.db_service import obtener_ultima_lectura_combinada, hay_proceso_activo, LecturaException
+from database.db_service import obtener_ultima_lectura_combinada, hay_proceso_activo, LecturaException 
 
 ai_bp = Blueprint("ai_bp", __name__)
 
@@ -42,8 +42,10 @@ def analizar_biodigestor():
             }), 200
 
         # --- LECTURA COMPLETA → PREDICCIÓN ---
-        temperatura, presion, gas, timestamp = lectura
-        resultado = predecir_alerta(temperatura, presion, gas, timestamp)
+        presion_leida, temperatura_leida, gas_leido, timestamp = lectura
+        
+        # predecir_alerta en el orden que espera: (temperatura, presion, gas, timestamp)
+        resultado = predecir_alerta(temperatura_leida, presion_leida, gas_leido, timestamp)
         return jsonify(resultado), 200
 
     except Exception as e:

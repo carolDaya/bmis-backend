@@ -1,7 +1,7 @@
 # render.yaml
 services:
   - type: web
-    name: biodigestor-backend
+    name: biodigestor-backendd
     env: docker
     plan: free
     docker:
