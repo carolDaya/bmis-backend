@@ -1,4 +1,3 @@
-# database/models/__init__.py
 from .user import User
 from .sensor import Sensor
 from .lectura import Lectura

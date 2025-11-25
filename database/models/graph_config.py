@@ -3,8 +3,7 @@ from datetime import datetime
 
 class GraphConfig(db.Model):
     """
-    Configuración de gráficas para cada sensor.
-    - sensor_id único: 1 sensor → 1 configuración de gráfica
+    Configuración de gráficas por sensor
     """
     __tablename__ = "graficas_config"
 

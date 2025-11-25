@@ -1,4 +1,3 @@
-# database/connection.py - CONFIGURACIÓN COMPLETA
 import os
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
@@ -18,7 +17,7 @@ def init_app(app):
     port = os.environ.get("DB_PORT")
     db_name = os.environ.get("DB_NAME")
 
-    # ✅ Crear archivo temporal con el certificado SSL
+    # archivo temporal con el certificado SSL
     ssl_cert_content = """-----BEGIN CERTIFICATE-----
 MIIEUDCCArigAwIBAgIUUwj0YP3AzLaNJu4prTkM8vAtq9wwDQYJKoZIhvcNAQEM
 BQAwQDE+MDwGA1UEAww1ZjBiYjEwYTQtZjk4NS00NTc1LWIxYTAtNjIzYTNhY2Mx
@@ -74,12 +73,11 @@ eYXSuA==
 
     try:
         db.init_app(app)
-        print("✅ Conectado a Aiven MySQL correctamente!")
         
         # Limpiar archivo temporal después de usar
         import atexit
         atexit.register(lambda: os.unlink(ssl_ca_path) if os.path.exists(ssl_ca_path) else None)
         
     except Exception as e:
-        print(f"❌ Error al conectar con Aiven: {e}")
+        print(f"Error al conectar con Aiven: {e}")
         raise

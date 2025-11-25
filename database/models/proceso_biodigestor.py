@@ -4,9 +4,7 @@ from sqlalchemy import CheckConstraint
 
 class ProcesoBiodigestor(db.Model):
     """
-    Modelo de Proceso del Biodigestor.
-    - fecha_fin nullable significa que el proceso sigue activo.
-    - lecturas relacionadas.
+    Modelo de Proceso del Biodigestor
     """
     __tablename__ = "proceso_biodigestor"
     

@@ -8,7 +8,7 @@ import joblib
 def optimizar_modelo():
     """Optimiza el modelo para los casos problemáticos identificados"""
     
-    print("🔄 OPTIMIZANDO MODELO...")
+    print("OPTIMIZANDO MODELO...")
     
     # Cargar dataset original
     df = pd.read_csv("sensors.csv")
@@ -20,7 +20,6 @@ def optimizar_modelo():
     )
     df["tipo_alerta"] = df["tipo_alerta"].fillna("Normal").astype(str)
     
-    # 🔧 ESTRATEGIA 1: AUMENTAR DATOS PARA CASOS PROBLEMÁTICOS
     print("📊 Aumentando datos para casos problemáticos...")
     
     # Caso 1: Temperaturas bajas que no se detectan (25°C)
@@ -64,10 +63,9 @@ def optimizar_modelo():
         pd.DataFrame(nuevas_bajas_produccion)
     ], ignore_index=True)
     
-    print(f"📈 Dataset original: {len(df)} registros")
-    print(f"📈 Dataset aumentado: {len(df_aumentado)} registros")
+    print(f"Dataset original: {len(df)} registros")
+    print(f"Dataset aumentado: {len(df_aumentado)} registros")
     
-    # 🔧 ESTRATEGIA 2: ENTRENAR CON PESOS DE CLASE MEJORADOS
     X = df_aumentado[["temperatura_celsius", "presion_biogas_kpa", "mq4_ppm", "dia_proceso"]]
     y_alerta = df_aumentado["alerta_ia"]
     y_tipo = df_aumentado["tipo_alerta"]
@@ -97,7 +95,6 @@ def optimizar_modelo():
     print(f"   Alerta: {peso_clases_alerta}")
     print(f"   Tipo: { {k: round(v, 2) for k, v in peso_clases_tipo.items()} }")
     
-    # 🔧 ESTRATEGIA 3: MODELOS OPTIMIZADOS
     modelo_alerta_opt = RandomForestClassifier(
         n_estimators=150,  # Más árboles
         max_depth=20,      # Más profundidad
@@ -119,7 +116,7 @@ def optimizar_modelo():
     )
     
     # Entrenamiento
-    print("🤖 Entrenando modelos optimizados...")
+    print("Entrenando modelos optimizados...")
     modelo_alerta_opt.fit(X, y_alerta)
     modelo_tipo_opt.fit(X, y_tipo)
     
@@ -127,7 +124,7 @@ def optimizar_modelo():
     joblib.dump(modelo_alerta_opt, "ml/modelo_alerta_optimizado.pkl")
     joblib.dump(modelo_tipo_opt, "ml/modelo_tipo_alerta_optimizado.pkl")
     
-    print("✅ Modelos optimizados guardados")
+    print("Modelos optimizados guardados")
     return modelo_alerta_opt, modelo_tipo_opt, df_aumentado
 
 if __name__ == "__main__":

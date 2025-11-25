@@ -19,10 +19,6 @@ except FileNotFoundError:
     modelo_tipo = None
 
 
-# -------------------------------------------------------------------
-# AI SERVICE FUNCTIONS
-# -------------------------------------------------------------------
-
 def calcular_dia_proceso(timestamp_str):
     """
     Calcula el día del proceso según el timestamp.
