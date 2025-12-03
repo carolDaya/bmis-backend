@@ -29,8 +29,11 @@ def calcular_dia_proceso(timestamp_str):
     if fecha_inicio is None:
         return 0
 
-    # Intentar formatos
-    formatos_admitidos = ("%Y-%m-%d %H:%M:%S", "%d/%m/%Y %H:%M")
+    formatos_admitidos = (
+        "%Y-%m-%d %H:%M:%S.%f", 
+        "%Y-%m-%d %H:%M:%S", 
+        "%d/%m/%Y %H:%M"
+    )
 
     for fmt in formatos_admitidos:
         try:
@@ -39,21 +42,19 @@ def calcular_dia_proceso(timestamp_str):
         except ValueError:
             continue
     else:
-        # Timestamp inválido
         return 1
 
-    delta = timestamp - fecha_inicio
+    delta = timestamp.date() - fecha_inicio.date()
     return delta.days + 1
 
 
 def predecir_alerta(temperatura, presion, gas, timestamp):
     """
     Realiza predicción IA.
-    Maneja errores comunes, modelos no cargados, no proceso activo, etc.
+    Maneja errores comunes y modelos no cargados.
     Retorna un dict estandarizado.
     """
     try:
-
         # --- SI NO HAY MODELOS CARGADOS ---
         if modelo_alerta is None or modelo_tipo is None:
             return {
@@ -86,7 +87,6 @@ def predecir_alerta(temperatura, presion, gas, timestamp):
         alerta_pred = int(modelo_alerta.predict(entrada)[0])
         tipo_pred = str(modelo_tipo.predict(entrada)[0])
 
-        # Obtener recomendaciones según lectura
         recomendacion_data = obtener_recomendacion(
             estado=alerta_pred,
             temperatura=temperatura,
@@ -104,7 +104,6 @@ def predecir_alerta(temperatura, presion, gas, timestamp):
         }
 
     except Exception as e:
-        # Error interno del modelo o datos
         return {
             "alerta_ia": 0,
             "tipo_estado": "Error interno IA",
