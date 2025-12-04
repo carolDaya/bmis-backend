@@ -42,7 +42,7 @@ def analizar_biodigestor():
             }), 200
 
         # --- LECTURA COMPLETA → PREDICCIÓN ---
-        presion_leida, temperatura_leida, gas_leido, timestamp = lectura
+        temperatura_leida, presion_leida, gas_leido, timestamp = lectura
         
         # predecir_alerta en el orden que espera: (temperatura, presion, gas, timestamp)
         resultado = predecir_alerta(temperatura_leida, presion_leida, gas_leido, timestamp)
